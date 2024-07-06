@@ -1,0 +1,91 @@
+server:
+  port: 8003
+  tomcat:
+    uri-encoding: utf-8
+    max-http-header-size: 100MB
+  servlet:
+    context-path: /unimatch-api
+
+spring:
+  application:
+    name: UnimatchBackend
+  profiles:
+    active: linux
+  aop:
+    proxy-target-class: true
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    driverClassName: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://db_ip/unimatchDB
+    username: admin
+    password: db_pw
+    druid:
+      initial-size: 1
+      min-idle: 3
+      max-active: 20
+      max-wait: 10000
+      filters: stat,wall,slf4j
+      web-stat-filter:
+        enabled: true
+      stat-view-servlet:
+        enabled: true
+        url-pattern: /druid/*
+        login-username: admin
+        login-password: 123456
+        allow: 10.8.0.22
+        deny:
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
+  mail:
+    host: smtp.sendgrid.net
+    username: apikey
+    password: sendgrid_pw
+    default-encoding: utf-8
+    protocol: smtp
+    properties:
+      mail:
+        smtp:
+          auth: true
+          ssl:
+            enable: true
+            required: true
+          starttls:
+            enable: true
+            required: true
+    port: 465
+
+
+mybatis-plus:
+  mapper-locations: classpath:mapper/*.xml
+  global-config:
+    db-config:
+      id-type: auto
+      field-strategy: NOT_EMPTY
+      db-type: MYSQL
+  configuration:
+    map-underscore-to-camel-case: true
+    call-setters-on-nulls: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+logging:
+  level:
+    root: info
+  file:
+    path: /home/webapp/unimatch/logs/${spring.application.name}/
+    name: ${spring.application.name}
+  logback:
+    rollingpolicy:
+      max-history: 7
+      max-file-size: 10MB
+
+file:
+  static-prefix: attach
+  access-path-pattern: /${file.static-prefix}/**
+  upload-folder: /home/webapp/unimatch/attach
+  # max file size
+  max-post-size: 100
